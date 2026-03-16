@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment History | SmartHealth</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="../index.html" class="brand">
+            <img src="../images/modern_hospital_logo.png" alt="Logo">
+            <h2>Smart<span>Health</span></h2>
+        </a>
+        <nav class="nav-menu">
+            <span class="nav-label">Menu</span>
+            <a href="patient-dashboard.html" class="nav-link"><i class="fas fa-home"></i> <span>Dashboard</span></a>
+            <a href="appointment.html" class="nav-link"><i class="fas fa-calendar-plus"></i> <span>Book Appointment</span></a>
+            <a href="appointment-history.html" class="nav-link active"><i class="fas fa-history"></i> <span>My History</span></a>
+            <a href="ai-checker.html" class="nav-link"><i class="fas fa-robot"></i> <span>AI Symptom Checker</span></a>
+            <a href="../index.html" class="nav-link logout-bg"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+        </nav>
+        <div class="sidebar-user">
+            <div class="user-avatar">JD</div>
+            <div class="user-info">
+                <span class="name">John Doe</span>
+                <span class="role-tag">Patient</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <div class="topbar">
+            <h2>Appointment History</h2>
+            <div class="topbar-right">
+                <div class="user-profile">
+                    <div class="user-info"><span class="name">John Doe</span><span class="role">Patient</span></div>
+                    <div class="user-avatar">JD</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <div class="page-header">
+                <h1>My Medical History</h1>
+                <p>View all your past and upcoming appointments below.</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="cards" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+                <div class="card">
+                    <div class="card-icon" style="background:rgba(14,165,233,0.1);color:#0ea5e9;"><i class="fas fa-calendar-alt"></i></div>
+                    <h3>Total Appointments</h3>
+                    <div class="card-value" id="total-count">5</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background:rgba(16,185,129,0.1);color:#10b981;"><i class="fas fa-check-circle"></i></div>
+                    <h3>Completed</h3>
+                    <div class="card-value" id="done-count">3</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background:rgba(245,158,11,0.1);color:#f59e0b;"><i class="fas fa-clock"></i></div>
+                    <h3>Upcoming</h3>
+                    <div class="card-value" id="pending-count">2</div>
+                </div>
+            </div>
+
+            <!-- History Table -->
+            <div class="table-card">
+                <div class="table-card-header">
+                    <h3>All Appointments</h3>
+                    <div style="display:flex;gap:12px;align-items:center;">
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search..." oninput="filterHistory(this.value)" id="historySearch">
+                        </div>
+                        <select id="statusFilter" onchange="filterHistory(document.getElementById('historySearch').value)"
+                            style="padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.83rem;font-family:Inter,sans-serif;color:#0f172a;background:#f8fafc;outline:none;">
+                            <option value="">All Status</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <button class="action-btn primary" onclick="loadHistory()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Doctor</th>
+                            <th>Specialty</th>
+                            <th>Date &amp; Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history">
+                        <tr>
+                            <td>1</td>
+                            <td><span class="td-name">Dr. Sarah Smith</span></td>
+                            <td>Cardiology</td>
+                            <td>Feb 10, 2026 – 10:00 AM</td>
+                            <td><span class="badge badge-green">Completed</span></td>
+                            <td><a href="#" class="action-btn primary">View Report</a></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><span class="td-name">Dr. Mike Johnson</span></td>
+                            <td>General Medicine</td>
+                            <td>Jan 28, 2026 – 02:30 PM</td>
+                            <td><span class="badge badge-green">Completed</span></td>
+                            <td><a href="#" class="action-btn primary">View Report</a></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><span class="td-name">Dr. Anita Rao</span></td>
+                            <td>Neurology</td>
+                            <td>Jan 05, 2026 – 11:00 AM</td>
+                            <td><span class="badge badge-green">Completed</span></td>
+                            <td><a href="#" class="action-btn primary">View Report</a></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><span class="td-name">Dr. Sarah Smith</span></td>
+                            <td>Cardiology</td>
+                            <td>Mar 24, 2026 – 10:00 AM</td>
+                            <td><span class="badge badge-blue">Confirmed</span></td>
+                            <td><a href="#" class="action-btn primary">Details</a></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><span class="td-name">Dr. Raj Mehta</span></td>
+                            <td>Orthopedics</td>
+                            <td>Apr 02, 2026 – 03:00 PM</td>
+                            <td><span class="badge badge-yellow">Pending</span></td>
+                            <td><a href="#" class="action-btn primary">Details</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../js/history.js"></script>
+<script>
+    function filterHistory(q) {
+        const statusVal = document.getElementById('statusFilter').value.toLowerCase();
+        const rows = document.querySelectorAll('#history tr');
+        rows.forEach(r => {
+            const text   = r.textContent.toLowerCase();
+            const matchQ = !q || text.includes(q.toLowerCase());
+            const matchS = !statusVal || text.includes(statusVal);
+            r.style.display = (matchQ && matchS) ? '' : 'none';
+        });
+    }
+
+    function loadHistory() {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        fetch('http://localhost:8083/api/appointments/patient/1', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        })
+        .then(r => r.json())
+        .then(data => {
+            const tbody = document.getElementById('history');
+            tbody.innerHTML = data.map((a, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td><span class="td-name">Doctor #${a.doctorId}</span></td>
+                    <td>—</td>
+                    <td>${a.appointmentDate || '—'}</td>
+                    <td><span class="badge badge-${a.status==='CONFIRMED'?'green':a.status==='PENDING'?'yellow':'red'}">${a.status}</span></td>
+                    <td><a href="#" class="action-btn primary">Details</a></td>
+                </tr>
+            `).join('');
+            document.getElementById('total-count').textContent = data.length;
+            document.getElementById('done-count').textContent  = data.filter(a=>a.status==='CONFIRMED').length;
+            document.getElementById('pending-count').textContent = data.filter(a=>a.status==='PENDING').length;
+        })
+        .catch(() => {});
+    }
+</script>
+
+</body>
+</html>

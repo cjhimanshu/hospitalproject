@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Appointment Calendar</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body>
+
+<div class="form-container">
+
+    <h2>Select Appointment Date</h2>
+
+    <input type="date" id="date">
+
+    <select id="doctor">
+
+        <option>Select Doctor</option>
+        <option>Dr Sharma</option>
+        <option>Dr Gupta</option>
+        <option>Dr Mehta</option>
+
+    </select>
+
+    <select id="time">
+
+        <option>Select Time</option>
+        <option>10:00 AM</option>
+        <option>11:00 AM</option>
+        <option>12:00 PM</option>
+
+    </select>
+
+    <button onclick="bookAppointment()">Book Appointment</button>
+
+    <div id="message"></div>
+
+</div>
+
+<script src="../js/calendra.js"></script>
+
+</body>
+</html>
