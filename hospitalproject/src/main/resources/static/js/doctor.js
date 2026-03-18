@@ -162,20 +162,15 @@ function refreshDashboard() {
 async function loadNotifications() {
 
     try {
-
-        const res = await fetch("/api/doctor/notifications");
-        const notifications = await res.json();
-
-        const bell = document.getElementById("notificationCount");
-
-        if (bell) {
-            bell.innerText = notifications.length;
+        if (typeof buildNotificationsForRole === "function") {
+            const notifications = await buildNotificationsForRole("DOCTOR");
+            const bell = document.getElementById("notificationCount");
+            if (bell) {
+                bell.innerText = notifications.length;
+            }
         }
-
     } catch (error) {
-
         console.log("Notification error");
-
     }
 
 }

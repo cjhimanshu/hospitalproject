@@ -39,7 +39,19 @@
         <div class="topbar">
             <h2>Patient Overview</h2>
             <div class="topbar-right">
-                <div class="topbar-icon notif-dot"><i class="fas fa-bell"></i></div>
+                <div class="notification-wrap">
+                    <button type="button" class="topbar-icon topbar-icon-button notif-dot" data-notification-bell data-notification-role="PATIENT">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count" data-notification-count>0</span>
+                    </button>
+                    <div class="notification-panel" data-notification-panel>
+                        <div class="notification-header">
+                            <h4>Notifications</h4>
+                            <span data-notification-summary>Loading...</span>
+                        </div>
+                        <div class="notification-list" data-notification-list></div>
+                    </div>
+                </div>
                 <div class="user-profile">
                     <div class="user-info">
                         <span class="name" data-user-name>John Doe</span>
@@ -203,6 +215,7 @@
 </div>
 
 <script src="../js/session-ui.js"></script>
+<script src="../js/notifications.js"></script>
 <script>
     document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-IN', {
         weekday: 'long',
