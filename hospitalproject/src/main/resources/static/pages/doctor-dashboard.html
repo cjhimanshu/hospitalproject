@@ -39,7 +39,10 @@
         <div class="topbar">
             <h2>Doctor Dashboard</h2>
             <div class="topbar-right">
-                <div class="topbar-icon notif-dot"><i class="fas fa-bell"></i></div>
+                <div class="topbar-icon notif-dot">
+                    <i class="fas fa-bell"></i>
+                    <span id="notificationCount" style="position:absolute;bottom:4px;right:5px;font-size:10px;font-weight:800;color:#1394eb;background:#ffffff;border-radius:999px;padding:1px 5px;line-height:1.2;">0</span>
+                </div>
                 <div class="user-profile">
                     <div class="user-info">
                         <span class="name">Dr. Rajkumar</span>
@@ -57,15 +60,15 @@
                 <p>You have 4 appointments today and 7 pending reviews. The dashboard is organized to help you move from overview to action with less friction. Today is <span id="today-date"></span>.</p>
                 <div class="hero-meta">
                     <div class="hero-stat">
-                        <strong>4</strong>
+                        <strong id="todayAppointmentsHero">4</strong>
                         <span>Appointments for today</span>
                     </div>
                     <div class="hero-stat">
-                        <strong>128</strong>
+                        <strong id="totalPatientsHero">128</strong>
                         <span>Patients under active care</span>
                     </div>
                     <div class="hero-stat">
-                        <strong>4.9</strong>
+                        <strong id="patientRatingHero">4.9</strong>
                         <span>Average patient rating</span>
                     </div>
                 </div>
@@ -79,7 +82,7 @@
                                 <i class="fas fa-calendar-day"></i>
                             </div>
                             <h3>Today's Appointments</h3>
-                            <div class="card-value">4</div>
+                            <div class="card-value" id="todayAppointments">4</div>
                             <p>2 confirmed and 2 awaiting action.</p>
                         </div>
 
@@ -88,7 +91,7 @@
                                 <i class="fas fa-bed-pulse"></i>
                             </div>
                             <h3>Total Patients</h3>
-                            <div class="card-value">128</div>
+                            <div class="card-value" id="totalPatients">128</div>
                             <p>Current panel and follow-up cases.</p>
                         </div>
 
@@ -97,15 +100,24 @@
                                 <i class="fas fa-clock"></i>
                             </div>
                             <h3>Pending Review</h3>
-                            <div class="card-value">7</div>
+                            <div class="card-value" id="pendingReview">7</div>
                             <p>Reports and updates waiting for review.</p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-icon" style="background:rgba(124,92,255,0.12);color:#7c5cff;">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h3>Patient Rating</h3>
+                            <div class="card-value" id="patientRating">4.9</div>
+                            <p>Based on ongoing patient feedback.</p>
                         </div>
                     </div>
 
                     <div class="table-card">
                         <div class="table-card-header">
                             <h3>Today's Appointments</h3>
-                            <button class="action-btn primary" onclick="loadAppointments()">
+                            <button class="action-btn primary" onclick="refreshDashboard()">
                                 <i class="fas fa-rotate-right"></i> Refresh
                             </button>
                         </div>
@@ -120,7 +132,7 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="appointments">
+                                <tbody id="appointmentTable">
                                     <tr>
                                         <td>
                                             <span class="td-name">Rahul Sharma</span>
@@ -130,8 +142,8 @@
                                         <td>Chest pain follow-up</td>
                                         <td><span class="badge badge-yellow">Pending</span></td>
                                         <td>
-                                            <button class="action-btn approve" onclick="approve(1)"><i class="fas fa-check"></i> Approve</button>
-                                            <button class="action-btn reject" onclick="reject(1)" style="margin-left:6px;"><i class="fas fa-xmark"></i> Reject</button>
+                                            <button class="action-btn approve" onclick="approveAppointment(1)"><i class="fas fa-check"></i> Approve</button>
+                                            <button class="action-btn reject" onclick="rejectAppointment(1)" style="margin-left:6px;"><i class="fas fa-xmark"></i> Reject</button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -143,8 +155,8 @@
                                         <td>ECG review</td>
                                         <td><span class="badge badge-green">Confirmed</span></td>
                                         <td>
-                                            <button class="action-btn approve" onclick="approve(2)"><i class="fas fa-check"></i> Approve</button>
-                                            <button class="action-btn reject" onclick="reject(2)" style="margin-left:6px;"><i class="fas fa-xmark"></i> Reject</button>
+                                            <button class="action-btn approve" onclick="approveAppointment(2)"><i class="fas fa-check"></i> Approve</button>
+                                            <button class="action-btn reject" onclick="rejectAppointment(2)" style="margin-left:6px;"><i class="fas fa-xmark"></i> Reject</button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -156,8 +168,8 @@
                                         <td>BP monitoring</td>
                                         <td><span class="badge badge-blue">Scheduled</span></td>
                                         <td>
-                                            <button class="action-btn approve" onclick="approve(3)"><i class="fas fa-check"></i> Approve</button>
-                                            <button class="action-btn reject" onclick="reject(3)" style="margin-left:6px;"><i class="fas fa-xmark"></i> Reject</button>
+                                            <button class="action-btn approve" onclick="approveAppointment(3)"><i class="fas fa-check"></i> Approve</button>
+                                            <button class="action-btn reject" onclick="rejectAppointment(3)" style="margin-left:6px;"><i class="fas fa-xmark"></i> Reject</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -189,7 +201,6 @@
         </div>
     </div>
 </div>
-
 <script src="../js/doctor.js"></script>
 <script>
     document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-IN', {
@@ -198,6 +209,25 @@
         month: 'long',
         day: 'numeric'
     });
+
+    const syncDoctorHeroStats = () => {
+        const pairs = [
+            ['todayAppointments', 'todayAppointmentsHero'],
+            ['totalPatients', 'totalPatientsHero'],
+            ['patientRating', 'patientRatingHero']
+        ];
+
+        pairs.forEach(([sourceId, targetId]) => {
+            const source = document.getElementById(sourceId);
+            const target = document.getElementById(targetId);
+            if (source && target) {
+                target.textContent = source.textContent;
+            }
+        });
+    };
+
+    syncDoctorHeroStats();
+    setInterval(syncDoctorHeroStats, 1500);
 </script>
 
 </body>
