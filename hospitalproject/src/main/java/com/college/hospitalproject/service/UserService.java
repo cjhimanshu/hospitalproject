@@ -21,12 +21,24 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User register(User user) {
+        if (user.getRole() == null) {
+            user.setRole(Role.PATIENT);
+        }
+
+        user.setName(user.getName() != null ? user.getName().trim() : null);
+        user.setEmail(user.getEmail() != null ? user.getEmail().trim().toLowerCase() : null);
+        user.setPhone(user.getPhone() != null ? user.getPhone().trim() : null);
+        user.setGender(user.getGender() != null ? user.getGender().trim() : null);
+        user.setDateOfBirth(user.getDateOfBirth() != null ? user.getDateOfBirth().trim() : null);
+        user.setBloodGroup(user.getBloodGroup() != null ? user.getBloodGroup().trim() : null);
+        user.setAddress(user.getAddress() != null ? user.getAddress().trim() : null);
+        user.setEmergencyContact(user.getEmergencyContact() != null ? user.getEmergencyContact().trim() : null);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     public User login(String email, String password) {
-        User user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmail(email.trim().toLowerCase()).orElse(null);
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return user;
         }

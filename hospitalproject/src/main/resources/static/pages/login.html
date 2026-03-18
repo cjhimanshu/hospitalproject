@@ -14,12 +14,12 @@
     <div class="auth-image-panel" style="background: linear-gradient(160deg, #0f172a 0%, #0c4a6e 50%, #0f172a 100%), url('../images/medical_team_login.png') center/cover;">
         <div class="panel-content">
             <div class="panel-badge"><i class="fas fa-shield-heart"></i> Secure Access</div>
-            <h2>Welcome back to your care workspace</h2>
-            <p>Move from sign-in to appointments, patient activity, and records with a cleaner, more focused workflow.</p>
+            <h2>Welcome back to a brighter care experience</h2>
+            <p>Access appointments, records, and hospital workflows through a more colorful sign-in flow designed to feel clearer and more reassuring.</p>
             <div class="panel-features">
                 <div class="panel-feature"><i class="fas fa-check-circle"></i> Review appointments and records faster</div>
                 <div class="panel-feature"><i class="fas fa-check-circle"></i> Access AI-assisted patient guidance</div>
-                <div class="panel-feature"><i class="fas fa-check-circle"></i> Continue across patient, doctor, and admin flows</div>
+                <div class="panel-feature"><i class="fas fa-check-circle"></i> Continue across patient and admin workflows</div>
             </div>
         </div>
     </div>
@@ -40,10 +40,6 @@
                     <strong>Patient</strong>
                     <span>Appointments and records</span>
                 </button>
-                <button type="button" class="role-option" data-role="DOCTOR" onclick="selectRole('DOCTOR', this)">
-                    <strong>Doctor</strong>
-                    <span>Consultations and queue</span>
-                </button>
                 <button type="button" class="role-option" data-role="ADMIN" onclick="selectRole('ADMIN', this)">
                     <strong>Admin</strong>
                     <span>Control panel access</span>
@@ -52,6 +48,11 @@
 
             <div class="role-hint" id="roleHint">
                 Signing in as a patient will open the patient dashboard after authentication.
+            </div>
+
+            <div class="admin-credential-card" id="adminCredentialCard">
+                <h4><i class="fas fa-user-shield"></i> Admin Access Mode</h4>
+                <p>Use the hospital administrator account for panel access. Default credentials after backend restart are <strong>admin@hospital.com</strong> and <strong>admin123</strong>.</p>
             </div>
 
             <div class="form-grid">
@@ -84,7 +85,7 @@
 
         <div class="helper-panel">
             <h4>Quick tip</h4>
-            <p>This screen keeps the existing backend login flow intact, so the UI refresh does not change how authentication requests are sent.</p>
+            <p>Admin login uses the seeded hospital admin account. Default admin email is <strong>admin@hospital.com</strong> and password is <strong>admin123</strong> after the app restarts with the backend fix.</p>
         </div>
 
         <div class="switch-auth">
@@ -103,14 +104,27 @@
         selectedRole = role;
         document.querySelectorAll('.role-option').forEach(btn => btn.classList.remove('active'));
         el.classList.add('active');
+        document.body.classList.toggle('admin-mode', role === 'ADMIN');
+        document.getElementById('adminCredentialCard').classList.toggle('visible', role === 'ADMIN');
 
         const hints = {
             PATIENT: 'Signing in as a patient will open the patient dashboard after authentication.',
-            DOCTOR: 'Signing in as a doctor will open the doctor dashboard after authentication.',
             ADMIN: 'Signing in as an admin will open the admin control panel after authentication.'
         };
 
         document.getElementById('roleHint').textContent = hints[role];
+        document.querySelector('.auth-kicker').innerHTML = role === 'ADMIN'
+            ? '<i class="fas fa-user-shield"></i> Admin sign in'
+            : '<i class="fas fa-lock"></i> Sign in';
+        document.querySelector('.auth-form-panel h3').textContent = role === 'ADMIN'
+            ? 'Access the admin control panel'
+            : 'Access your account';
+        document.querySelector('.sub-text').textContent = role === 'ADMIN'
+            ? 'Enter administrator credentials to continue into the SmartHealth control center.'
+            : 'Enter your credentials to continue into your SmartHealth dashboard.';
+        document.getElementById('loginBtn').innerHTML = role === 'ADMIN'
+            ? '<i class="fas fa-user-shield"></i> Sign In As Admin'
+            : '<i class="fas fa-right-to-bracket"></i> Sign In';
     }
 
     function togglePw(el) {
@@ -179,7 +193,9 @@
             localStorage.removeItem('email');
             localStorage.removeItem('role');
             showToast(err.message || 'Login failed. Please try again.', 'error');
-            btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Sign In';
+            btn.innerHTML = selectedRole === 'ADMIN'
+                ? '<i class="fas fa-user-shield"></i> Sign In As Admin'
+                : '<i class="fas fa-right-to-bracket"></i> Sign In';
             btn.disabled = false;
         });
     }
